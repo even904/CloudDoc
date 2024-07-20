@@ -1,0 +1,6 @@
+- 常用网址
+  - [百度](https://www.baidu.com)
+  - [Google](https://www.google.com/)
+- 经典文档
+  - [快速入门](/example.md)
+  - [:cn:](/Build.md)
