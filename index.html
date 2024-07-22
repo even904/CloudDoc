@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
@@ -12,9 +13,14 @@
   <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/dark.css" /> -->
   <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/pure.css" /> -->
   <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-defaults.css"> -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"> -->
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/A5yncX/docsify-theme-darcula@v1.0/darcula.css"> -->
+  <link rel="stylesheet" href="./theme-simple.css">
+  <!-- 引入自定义 CSS -->
+  <link rel="stylesheet" href="./custom.css">
 </head>
-<body>
+
+<body class="custom-body">
   <nav>
     <a href="https://www.baidu.com">百度</a>
     <a href="#/example"><b>快速入门</b></a>
@@ -30,7 +36,7 @@
       coverpage: true,
       homepage: "README.md",
       auto2top: true,
-      count:{ countable:true, fontsize:'0.9em', color:'rgb(90,90,90)', language:'chinese' }//字数统计
+      count: { countable: true, fontsize: '0.9em', color: 'rgb(90,90,90)', language: 'chinese' }//字数统计
     }
   </script>
   <!-- Docsify v4 -->
@@ -57,11 +63,28 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-shell-session.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-http.min.js"></script>
-  
+
   <!-- 一键复制插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
 
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
+  <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
+  <script src="//unpkg.com/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="https://priesttomb.github.io/js/md5.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Ov23lijFKwpfW6dB0dB1',
+      clientSecret: 'e7e6bd2e1d158f5171892968a238bd28aae2b69d',
+      repo: 'GitComments',
+      owner: 'even904',
+      admin: ['even904'],
+      id: md5(location.pathname),
+      distractionFreeMode: false
+    })
+  </script>
 </body>
+
 </html>
 
 

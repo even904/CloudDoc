@@ -1,0 +1,12 @@
+.custom-body {
+    background: rgba(0, 0, 0, 0) url('_media/wave.png') no-repeat fixed;
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: soft-light; /* 或者使用其他混合模式 */
+}
+
+.sidebar {
+    /* background: rgba(255, 255, 255, 0.25) url('_media/sand2.jpg') no-repeat center; */
+    background: rgba(255, 255, 255, 0.25);
+    background-blend-mode: lighten;
+}
