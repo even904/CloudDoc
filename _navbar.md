@@ -1,4 +1,5 @@
+- 文档导航
+  - [【ESP32-WiFi学习】系列](【ESP32-WiFi学习】第一篇：工作模式.md)
+  - [\[文档写作样例\]](example)
+  - [\[图片视频样例\]:cn:](Build)
 - [博客主页](https://even904.github.io/)
-- 经典文档
-  - [快速入门](/example.md)
-  - [:cn:](/Build.md)
