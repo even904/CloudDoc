@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【ESP32-WiFi学习】第二篇：函数库与API"
-tags = ["ESP32, WiFi, ESP-IDF"]
+title = "【Docsify】Mermaid插件"
+tags = ["Docsify, Markdown, Mermaid"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)

@@ -37,4 +37,3 @@ ESP32没有没有独立的、专门针对AP功能优化的硬件组件，因此�
 ![img](https://eleceasy.com/uploads/default/optimized/2X/e/eef38b615678f67215f5f275334c357fba3b7a78_2_1024x576.jpeg)**AP与STA模式** *(图源：https://eleceasy.com)*
 
 ## Debug
-
