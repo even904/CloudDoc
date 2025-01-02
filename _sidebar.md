@@ -1,7 +1,7 @@
 <!-- - [首页](/) -->
 - [ESP32-WiFi学习](【ESP32-WiFi学习】任务目标.md) 
-  - [【ESP32-WiFi学习】第一篇：工作模式](【ESP32-WiFi学习】第一篇：工作模式)
-  - [【ESP32-WiFi学习】第二篇：函数库与API](【ESP32-WiFi学习】第二篇：函数库与API.md)
+  - [【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读](【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读.md)
+  - [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读](【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读.md)
   - [【ESP32-WiFi学习】Bugs解决记录](【ESP32-WiFi学习】Bugs解决记录.md)
 - [Docsify](example.md)
   - [文档写作样例](example.md)
