@@ -1,12 +1,12 @@
 ---
 author: [Even]
 date: [2025年01月02日]
-update: [2025年01月02日]
+update: [2025年01月03日]
 title: [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读]
 tags: [ESP32,WiFi,ESP-IDF,Roaming]
 ---
 
-# 3 roaming_11kvr
+# roaming_11kvr
 
 > IEEE 802.11k/v/r 标准的 WiFi Roaming
 
@@ -16,7 +16,7 @@ tags: [ESP32,WiFi,ESP-IDF,Roaming]
 - 什么是BTM？
 - 什么是RRM？
 - WiFiRoaming时ESP32WiFi工作在什么模式下？
-- 本例程中的通信错误处理机制如何实现？
+- 本例程中的通信异常处理机制如何实现？
 
 #### WiFi roaming
 WiFi roaming是指对于同一个SSID，有多个AP相互覆盖的情况下，当终端设备从一个AP移动至另一个AP覆盖范围时，通过自动选择策略保持切换AP时网络连接可靠性的技术。
@@ -106,7 +106,18 @@ BTM从逻辑上说是RRM的一个部分。
 #### WiFi Roaming 时 ESP32 WiFi 工作在什么模式下
 例程中工作在STA模式下。官方文档似乎未给出ESP32的STA/AP混合模式是否支持BTM或RRM机制。限于ESP32的处理能力，一般情况下并不需要如此复杂的网络管理机制，故仅在STA模式下讨论WiFiRoaming的问题。
 
-#### 本例程中的通信错误处理机制如何实现
+#### 本例程中的通信异常处理机制如何实现
 
+```mermaid
+flowchart TD
+    id1[/Register WiFi event_handler<br>Listen To All Events/]
+    id1-->id2[Enable STA]
+    id2-->id3{Is Connected？}
+    id3-->|yes| id4[LOG:btm/rrm mode]
+    id3-->|no| id5{Is Roaming？}
+    id5-->|yes| id6[LOG:Roaming,do nothing]
+    id5-->|no| id7[LOG:Disconnect Reason=xxx<br>Try Connect Once]
+```
+本例程中的通信异常处理机制主要基于ESP-IDF框架提供的事件处理机制。ESP-IDF是基于FreeRTOS的框架，具有优先级调度功能，但与FreeRTOS的事件机制相比更专注于IoT应用。其通过定义全局事件循环(EventLoop)实现来自硬件和任务(Tasks)的事件处理。
 
-
+本例程主要应用了WiFi库中预定义的事件类型，通过自定义的事件处理函数(event_handler)实现对连接异常的处理。
