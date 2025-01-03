@@ -1,4 +1,4 @@
-<!-- - [首页](/) -->
+- [首页](/HomePage.md)
 - [ESP32-WiFi学习](【ESP32-WiFi学习】任务目标.md) 
   - [【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读](【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读.md)
   - [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读](【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读.md)
