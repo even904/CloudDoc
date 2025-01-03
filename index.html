@@ -47,8 +47,8 @@
       plugins: [
         function (hook) {
           hook.doneEach(function () {
-            console.log('Initializing Gitalk with id:', location.pathname);
-            if (!window.gitalkInitialized || window.location.pathname !== window.lastPathname) {
+            console.log('Initializing Gitalk with full URL:', window.location.href);
+            if (!window.gitalkInitialized || window.location.href !== window.lastHref) {
               var oldContainer = document.getElementById('gitalk-container');
               if (oldContainer) {
                 oldContainer.remove();
@@ -59,16 +59,16 @@
                 repo: 'GitComments',
                 owner: 'even904',
                 admin: ['even904'],
-                id: md5(location.pathname),
+                id: md5(window.location.href),
                 distractionFreeMode: false
               });
               var gitalkContainer = document.createElement('div');
               gitalkContainer.id = 'gitalk-container';
               // 选择文章主要内容装载Gitalk容器，防止侧边栏遮挡
-              document.querySelector('.content').appendChild(gitalkContainer); 
+              document.querySelector('.content').appendChild(gitalkContainer);
               gitalk.render('gitalk-container');
               window.gitalkInitialized = true;
-              window.lastPathname = window.location.pathname;
+              window.lastHref = window.location.href;
             }
           });
         }
