@@ -36,6 +36,7 @@ A fatal error occurred: No serial data received
 
 
 5. 后续： 当显示如下警告时
+
 ```--- Warning: GDB cannot open serial ports accessed as COMx
 --- Using \\.\COM6 instead...
 --- esp-idf-monitor 1.5.0 on \\.\COM6 115200
