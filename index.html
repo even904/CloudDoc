@@ -46,9 +46,13 @@
       notFoundPage: { "/": "_404.md" },
       plugins: [
         function (hook) {
-          hook.mounted(function () {
-            // 确保 Gitalk 只初始化一次
-            if (!window.gitalkInitialized) {
+          hook.doneEach(function () {
+            console.log('Initializing Gitalk with id:', location.pathname);
+            if (!window.gitalkInitialized || window.location.pathname !== window.lastPathname) {
+              var oldContainer = document.getElementById('gitalk-container');
+              if (oldContainer) {
+                oldContainer.remove();
+              }
               var gitalk = new Gitalk({
                 clientID: 'Ov23lijFKwpfW6dB0dB1',
                 clientSecret: 'e7e6bd2e1d158f5171892968a238bd28aae2b69d',
@@ -64,6 +68,7 @@
               document.querySelector('.content').appendChild(gitalkContainer); 
               gitalk.render('gitalk-container');
               window.gitalkInitialized = true;
+              window.lastPathname = window.location.pathname;
             }
           });
         }
