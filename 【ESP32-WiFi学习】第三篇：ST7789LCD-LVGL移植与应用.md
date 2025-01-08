@@ -86,7 +86,7 @@ flowchart LR
    - 运行自定义显示任务
    - 显示函数应置于`lvgl_port_lock`和`lvgl_port_unlock`之间，即lvgl互斥锁保护段内
 
-下面是本例代码（略去SPI初始化，与官方例程相同）：
+下面是本例代码（略去SPI初始化，与官方例程相同；此部分为运行代码，文中其余部分代码均作为调试用）：
 
 ``` c
 //...
@@ -488,11 +488,16 @@ LVGL初始化设置如下：
   disp_handle = lvgl_port_add_disp(&disp_cfg);
 ```
 - 屏幕方向调试
+  
    LVGL初始化时需要定义屏幕宽高及方向，如果屏幕宽高错误，会出现显示不全、显示覆盖等问题。能够正常填充屏幕后，利用文字确定合适的旋转方向。
-   `lv_disp_set_rotation(disp_handle, 3);`：其中`3` 表示旋转180°
-   LVGL的坐标系定义如下：以左上角为原点(0,0)，向右为x轴正向，向下为y轴正向。
+   `lv_disp_set_rotation(disp_handle, 3);`：其中`3` 表示旋转180°。实际上，这个参数应该填写枚举类型值，如`LV_DISPLAY_ROTATION_90`。
+
+   **LVGL的坐标系定义：以左上角为原点(0,0)，向右为x轴正向，向下为y轴正向。**
+
 - 颜色模式
+  
    `.color_format = LV_COLOR_FORMAT_RGB565`：ST7789支持的颜色模式有RGB565、RGB666等，这些在数据手册中可以查到，在LCD初始化时已经发送了颜色模式命令，LVGL应该保持与LCD初始化时的一致。
+
    `.swap_bytes = true`：RGB565模式下每个像素颜色数据为2个字节，如果发现显示颜色与定义不符，应考虑交换发送颜色字节顺序。下图显示交换前后的效果。
 
 |.swap_bytes = false|.swap_bytes = true|
