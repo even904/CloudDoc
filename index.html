@@ -44,6 +44,10 @@
       auto2top: true,
       count: { countable: true, fontsize: '0.9em', color: 'rgb(90,90,90)', language: 'chinese' },//字数统计
       notFoundPage: { "/": "_404.md" },
+      latex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']], // default
+        displayMath: [['$$', '$$']],               // default
+      },
       plugins: [
         function (hook) {
           hook.doneEach(function () {
@@ -109,8 +113,10 @@
   </script>
   <script src="//unpkg.com/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
-</body>
-
+  <!-- LaTeX display engine -->
+  <script src="//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!--  docsify-latex plugin -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
 </html>
 
 

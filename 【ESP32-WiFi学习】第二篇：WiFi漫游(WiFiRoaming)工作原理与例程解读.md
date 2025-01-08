@@ -6,7 +6,9 @@ title: [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与
 tags: [ESP32,WiFi,ESP-IDF,Roaming]
 ---
 
-# roaming_11kvr
+# 第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读
+
+## roaming_11kvr
 
 > IEEE 802.11k/v/r 标准的 WiFi Roaming
 

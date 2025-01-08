@@ -1,7 +1,7 @@
 ---
 author: [Even]
 date: [2024年12月31日]
-update: [2024年12月31日]
+update: [2024年01月07日]
 title: [【ESP32-WiFi学习】任务目标]
 tags: [ESP32,WiFi,ESP-IDF]
 ---
@@ -21,9 +21,10 @@ tags: [ESP32,WiFi,ESP-IDF]
 
 # 完成表
 - [x] 接入家用WiFi联网
-- [ ] 屏幕显示
+- [x] 屏幕显示
 - [ ] 实时时钟
 - [ ] 倒计时
+
 ***
 
 - [ ] 网络天气
