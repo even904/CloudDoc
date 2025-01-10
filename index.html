@@ -59,6 +59,13 @@
         inlineMath: [['$', '$'], ['\\(', '\\)']], // default
         displayMath: [['$$', '$$']],               // default
       },
+      scrollToTop: {
+        auto: true,
+        text: '↑',
+        right: 15,
+        bottom: 15,
+        offset: 500
+      },
       plugins: [
         function (hook) {
           hook.doneEach(function () {
@@ -128,6 +135,7 @@
   <script src="//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <!--  docsify-latex plugin -->
   <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
+  <script src="//unpkg.com/docsify-scroll-to-top/dist/docsify-scroll-to-top.min.js"></script>
 
 </html>
 
