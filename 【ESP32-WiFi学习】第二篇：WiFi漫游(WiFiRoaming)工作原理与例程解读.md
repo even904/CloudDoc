@@ -1,7 +1,7 @@
 ---
 author: [Even]
 date: [2025年01月02日]
-update: [2025年01月03日]
+update: [2025年01月10日]
 title: [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读]
 tags: [ESP32,WiFi,ESP-IDF,Roaming]
 ---
@@ -64,28 +64,33 @@ BTM(BSS Transmission Management)是实现 WiFi Roaming 的具体机制，由 IEE
 1. 当前 AP 主动发送 BSS Transition Management Request 帧给 STA。
 2. STA 发现更合适的 AP，向当前 AP 发送 BTM query，AP 再发送 BSS Transition Management Request 帧给STA。 
 
-<!-- ```mermaid
----
-title: "BTM Request Frame"
----
-packet-beta
-0-15:"Frame Control"
-16-31:"Duration / ID"
-32-47:"Address 1 (RA)"
-48-63:"Address 2 (TA)"
-64-79:"Address 3 (BSSID)"
-80-95:"Sequence Control"
-96-111:"Category Code"
-112-127:"Action Code"
-128-135:"Dialog Token"
-136-143:"Status Code"
-144-151:"Transition Candidate List Count"
-152-287:"Transition Candidate List"
-288-311:"Disassociation Imminent"
-312-327:"Disassociation Timer"
-328-344:"Reason Code"
-``` -->
+绘图源码（Docsify mermaid插件尚未支持，因此给出源码及图片）：
+
+    ```mermaid
+    ---
+    title: "BTM Request Frame"
+    ---
+    packet-beta
+    0-15:"Frame Control"
+    16-31:"Duration / ID"
+    32-47:"Address 1 (RA)"
+    48-63:"Address 2 (TA)"
+    64-79:"Address 3 (BSSID)"
+    80-95:"Sequence Control"
+    96-111:"Category Code"
+    112-127:"Action Code"
+    128-135:"Dialog Token"
+    136-143:"Status Code"
+    144-151:"Transition Candidate List Count"
+    152-287:"Transition Candidate List"
+    288-311:"Disassociation Imminent"
+    312-327:"Disassociation Timer"
+    328-344:"Reason Code"
+
+    ```
+
 ![alt text](./post_image/BTM_Request_Frame.png)
+
 注意：上图中 152-287 字段的 Transition Candidate List 是不定长的，这个字段保留了所有候选 AP 的信息。后续字段比特位也随之调整。
 
 [ESP-IDF文档关于无线网络管理](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/api-guides/wifi.html#id47)有如下描述：
