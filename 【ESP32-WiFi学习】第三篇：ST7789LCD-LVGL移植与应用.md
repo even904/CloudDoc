@@ -1,7 +1,7 @@
 ---
 author: [Even]
 date: [2025年01月06日]
-update: [2025年01月08日]
+update: [2025年01月10日]
 title: [【ESP32-WiFi学习】第三篇：ST7789LCD-LVGL移植与应用]
 tags: [ESP32,WiFi,ESP-IDF,LVGL,ST7789]
 ---
@@ -32,6 +32,8 @@ ESP-IDF采用`idf_component.yml`文件声明组件依赖关系，这与ROS中的
 
 `ESP-IDF`使用`CMake`作为构建系统。运行编译任务时，`CMake`会根据项目的`CMakeLists.txt`文件和`sdkconfig.h`中的配置项生成适当的`Makefile`或`Ninja`构建文件。然后，构建工具（如`GNU Make`或`Ninja`）会编译源代码，链接库文件，并最终生成固件二进制文件。
 
+对于ESP-IDF内置组件，如ST7789驱动程序等，并不需要在`CMakeLists.txt`中声明包含路径，而是可以直接调用，ESP-IDF会自动包含这些文件参与编译。
+
 ```mermaid
 flowchart LR
     A[ComponentA-Kconfig] --> C(Project-sdkconfig)
@@ -43,12 +45,11 @@ flowchart LR
     style C fill:#f96,stroke:#333,stroke-width:4px
 ```
 
-
 #### 合理地引入LVGL控制LCD显示
 
 合理，意味着采用官方推荐的规范，把文件放在合适的地方，使用推荐的程序接口编写代码。
 
-LVGL是一个第三方的组件，因此应该在组件管理器中下载和使用。需要的是LVGL的源组件和接口组件。官方提供的ESP32的LVGL例程为`i2c_oled`，屏幕是由SSD1306驱动的OLED。理论上说，ST7789LCD屏幕作为组件也应置于组件管理器中，但是，ESP-IDF将其置于内置组件库中。由于官方提供的`lcd`例程驱动的就是ST7789LCD，因此本例基于该例程和`i2c_oled`例程进行修改。
+LVGL是一个第三方的组件，因此应该在组件管理器`ESP Component Registry`中下载和使用。需要的是LVGL的源组件和接口组件。官方提供的ESP32的LVGL例程为`i2c_oled`，屏幕是由SSD1306驱动的OLED。理论上说，ST7789LCD屏幕作为组件也应置于组件管理器中，但是，ESP-IDF已将其置于内置组件库中，可直接调用。
 
 在组件管理器`Install`:
 - lvgl/lvgl: ^9.2.2
@@ -110,6 +111,10 @@ flowchart LR
 #define PIN_NUM_BCKL 5
 
 #define LCD_BK_LIGHT_ON_LEVEL 1
+#define DISP_WIDTH 240  // 240
+#define DISP_HEIGHT 280 // Test:300
+#define X_OFFSET 0
+#define Y_OFFSET 20
 
 void display_test_image(lv_disp_t *disp) {
   const char *TAG = "Task";
@@ -146,6 +151,36 @@ void create_loading_animation(lv_disp_t *disp) {
   lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 0); // 将 spinner 居中对齐
 }
 
+// 1. SPI Init
+static void st7789_spi_init(void) {
+  esp_err_t ret;
+  spi_device_handle_t spi;
+  spi_bus_config_t buscfg = {.miso_io_num = PIN_NUM_MISO,
+                             .mosi_io_num = PIN_NUM_MOSI,
+                             .sclk_io_num = PIN_NUM_CLK,
+                             .quadwp_io_num = -1,
+                             .quadhd_io_num = -1,
+                             .max_transfer_sz = PARALLEL_LINES * 320 * 2 + 8};
+  spi_device_interface_config_t devcfg = {
+#ifdef CONFIG_LCD_OVERCLOCK
+      .clock_speed_hz = 26 * 1000 * 1000, // Clock out at 26 MHz
+#else
+      .clock_speed_hz = 10 * 1000 * 1000, // Clock out at 10 MHz
+#endif
+      .mode = 0,                  // SPI mode 0
+      .spics_io_num = PIN_NUM_CS, // CS pin
+      .queue_size = 7, // We want to be able to queue 7 transactions at a time
+      .pre_cb = lcd_spi_pre_transfer_callback, // Specify pre-transfer callback
+                                               // to handle D/C line
+  };
+  // Initialize the SPI bus
+  ret = spi_bus_initialize(LCD_HOST, &buscfg, SPI_DMA_CH_AUTO);
+  ESP_ERROR_CHECK(ret);
+  // Attach the LCD to the SPI bus
+  ret = spi_bus_add_device(LCD_HOST, &devcfg, &spi);
+  ESP_ERROR_CHECK(ret);
+}
+
 static lv_disp_t *lvgl_config_init(void) {
   lv_disp_t *disp_handle = NULL;
   // 2. Install LCD panel driver
@@ -175,6 +210,7 @@ static lv_disp_t *lvgl_config_init(void) {
 
   ESP_ERROR_CHECK(esp_lcd_panel_reset(lcd_panel_handle));
   ESP_ERROR_CHECK(esp_lcd_panel_init(lcd_panel_handle));
+  ESP_ERROR_CHECK(esp_lcd_panel_set_gap(lcd_panel_handle, X_OFFSET, Y_OFFSET)); // Set Offset
   ESP_ERROR_CHECK(esp_lcd_panel_invert_color(lcd_panel_handle, true));
   ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(lcd_panel_handle, true));
   // check_heap_memory();
@@ -217,7 +253,7 @@ void app_main(void) {
   const lv_disp_t *disp = lvgl_config_init();
   // Check if display is initialized, if so, disp pointer is not NULL
   ESP_LOGI(TAG, "Is num of disp_handle: %x", (uintptr_t)(disp));
-  lv_disp_set_rotation(disp, LV_DISPLAY_ROTATION_270);
+  // lv_disp_set_rotation(disp, LV_DISPLAY_ROTATION_270); //If necessary
   ESP_LOGI(TAG, "Display LVGL Test Image");
   // check_heap_memory();
   if (lvgl_port_lock(0)) {
@@ -227,8 +263,16 @@ void app_main(void) {
   }
 }
 ```
+##### 最终显示效果
+
+可见边框、排列、颜色均正确，动画可正常加载（实测）：
+
+<img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250110133749.png" height="400">
+
 #### ESP32的内存与LVGL的显存
-ESP32的内存段分配可以参看编译输出的内存使用摘要(Memory Type Usage Summary)。
+
+##### 内存与显存分配
+ESP32的内存段分配（可参考[ELF结构详解](https://www.cnblogs.com/QiQi-Robotics/p/15573352.html)）可以参看编译输出的内存使用摘要(Memory Type Usage Summary)。
 
 | Memory Type/Section | Used [bytes] | Used [%] | Remain [bytes] | Total [bytes] |
 |---------------------|--------------|----------|----------------|---------------|
@@ -246,7 +290,7 @@ ESP32的内存段分配可以参看编译输出的内存使用摘要(Memory Type
 | **RTC SLOW**            |           24 |    0.29% |           8,168 |           8,192 |
 |    .rtc_slow_reserved|           24 |    0.29% |                - |               - |
 
-由于显示数据置于缓存，采用一次性发送，能提高效率，因此使用LVGL必须为其分配显存。但是，在ESP32这类资源有限的嵌入式设备中，分配多少显存才能兼顾性能与资源？
+由于显示数据置于缓存，采用一次性DMA发送，能提高效率，因此使用LVGL必须为其分配显存。但是，在ESP32这类资源有限的嵌入式设备中，分配多少显存才能兼顾性能与资源？
 
 首先，LVGL采用`heap_caps_malloc`函数分配内存，当然，具体的内存分配函数也是可以通过`menuconfig`修改的。这个函数在调用`lvgl_port_add_disp`函数时被调用，`lvgl_port_add_disp`会分配`显存像素数量*sizeof(lv_color_t)`字节的空间。`heap_caps_malloc`函数从堆内存中分配内存。堆内存主要占用ESP32的DRAM的空间。DRAM 在 ESP32 中指的是内部 SRAM 中用于数据存储的部分。IRAM 是内部 SRAM 中用于存放代码的部分，DRAM 和 IRAM 实际物理存储介质均为 ESP32 Internal RAM，即内部 SRAM。具体描述参阅[esp32_reference_mannual.pdf](https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_cn.pdf)。
 
@@ -261,9 +305,10 @@ $$300\times240\times3=216000\quad bytes$$
 
 $$300\times240\times3\div2=108000\quad bytes$$
 
-另外还要**注意**，该缓存字节数不应超过SPI初始化时定义的`.max_transfer_sz`，ESP32 SPI不会尝试一次性传输超过此数量的数据。
+如此设置，则全屏幕刷新一次调用两次DMA传输即可完成，每次缓存数据准备时间相同。DMA传输不占用CPU时间，因此能提高效率。另外还要**注意**，该缓存字节数不应超过SPI初始化时定义的`.max_transfer_sz`，ESP32 SPI不会尝试一次性传输超过此数量的数据。
 
 如何监测运行时的内存数据？ESP-IDF提供了一系列用于监测内存数据的函数，由此可自定义内存监测函数：
+
 ``` c
 void check_heap_memory(void) {
   const char *TAG = "MEMORY";
@@ -366,16 +411,13 @@ ST7789为采用4线SPI通讯的LCD驱动芯片。
 
 ![](https://raw.githubusercontent.com/even904/Images/main/pic/20250107154415.png)
 
-按照LCD模块上的标注，定义屏幕宽高为 `240*280`。但在此尺寸下，无论是否加载LVGL，都会出现显示不全的现象。一开始，认为是像素偏移，也就是因生产装配原因导致的。ST7789的实际可控像素大于 `240*280`，因此如果装配偏差，有些像素确实可能无效。ST7789的命令中可以指定发送像素数据至ST7789内存的起始位置与终止位置，因此可以调整其偏移量(offset)。
+按照LCD模块上的标注，定义屏幕宽高为 `240*280`。但在此尺寸下，无论是否加载LVGL，都会出现显示不全的现象。一开始，认为是像素偏移，也就是厂家因装配等因素选择了特定显示区域，其内存映射地址不是从(0,0)开始的。ST7789的实际可控像素大于 `240*280`，因此有些内存地址确实可能无效。ST7789的命令中可以指定发送像素数据至ST7789内存的起始位置与终止位置，因此可以调整其偏移量(offset)。
 ![](https://raw.githubusercontent.com/even904/Images/main/pic/20250107161509.png)
-如果确实是像素偏移，那么每次传输数据都需要使偏移量参与计算。但无论如何调整偏移量，都无法正确归位。也就是无法正确将像素数据写入指定位置。
-
-于是意识到，屏幕像素的宽高定义可能相反，导致部分像素无效。对换宽高的数值，显示结果如下:
+如果确实是像素偏移，那么每次传输数据都需要使偏移量参与计算。但无论如何调整偏移量，都无法正确归位。也就是无法正确将像素数据写入指定位置。于是猜测，屏幕像素的宽高定义可能相反，导致部分像素无效。对换宽高的数值，显示结果如下:
 
 ![](https://raw.githubusercontent.com/even904/Images/main/pic/20250107154437.png)
 
-可见终止像素超过边界，覆盖了起始的像素。
-在存在LVGL的情况下调试，由于参数经过多重定义，调试十分困难。因此应该先在无LVGL时先调好这个问题。
+可见终止像素超过边界，覆盖了起始的像素，但从此现象难以判断具体问题。在存在LVGL的情况下调试，由于参数经过多重定义，调试十分困难。因此应该先在无LVGL时先调好这个问题。以下是基于自定义的ST7789驱动的绘制函数。后续实际使用时，采用的则是官方的`esp_lcd_panel_st7789`组件。
 
 ``` c
 static void lcd_draw_one_pixel(spi_device_handle_t spi, uint16_t x, uint16_t y,
@@ -452,13 +494,15 @@ static void lcd_draw_rectangle(spi_device_handle_t spi, uint16_t x, uint16_t y,
   lcd_draw_rectangle(spi, 0, 0, DISP_WIDTH, DISP_HEIGHT, 0xffff);
   lcd_draw_rectangle(spi, 0, 0, 50, 100, 0x0000);
 ```
-显示结果如下：
+显示结果如下图a：
 
-![](https://raw.githubusercontent.com/even904/Images/main/pic/20250107161820.png)
-****
-由`lcd_draw_rectangle`的实现可见，**ST7789内存地址(0,0)对应左上角像素**，屏幕向右向下为**内存地址递增**方向。屏幕宽度`DISP_WIDTH`应大于屏幕高度`DISP_HEIGHT`。因此实际上，显示不全的问题是**屏幕宽高定义错误**导致的。对换宽高数值，发现仍然有一点显示不全。意识到标注像素`280*240` 并非实际像素，经过测试，实际像素宽高应为 `300*240`。问题解决。
+|(a)280*240|(b)300*240|
+|---|---|
+|<img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250107161820.png" height="200">|<img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250107160720.png" height="200">|
 
-![](https://raw.githubusercontent.com/even904/Images/main/pic/20250107160720.png)
+由`lcd_draw_rectangle`的实现可见，**ST7789内存地址(0,0)对应左上角像素**，屏幕向右向下为**内存地址递增**方向。屏幕宽度`DISP_WIDTH`应大于屏幕高度`DISP_HEIGHT`。因此实际上，显示不全的问题是**屏幕宽高定义错误**导致的。对换宽高数值，发现仍然有一点显示不全。于是认为标注像素`280*240` 并非实际像素，经过测试，认为实际像素宽高应为 `300*240`，显示结果如上图b。
+
+但是，从此白色矩形本身可以看出，边长比例并非1：2的设定数值，短边短了20个像素，因此推测确实存在像素偏移。所以实际像素应为`280*240`，由于像素偏移，只能采用`300*240`以覆盖LCD显示区域。从后续LVGL显示效果看，在屏幕较长边方向上，居中仍存在偏移。经过查找，发现**官方的`esp_lcd_panel_st7789`组件提供了`esp_lcd_panel_set_gap`函数，用以设置默认像素偏移量**，应在第2步配置Panel device后调用，[此处为显示效果](#最终显示效果)。如果采用第三方的ST7789驱动程序，应该可以设置像素偏移量从而修改屏幕显示区域，即使用`CASET(2Ah)`和`RASET(2Bh)`命令设置传输数据需要送达的ST7789内存区域，此时应能够正常显示。
 
 **添加LVGL组件后的调试**
 
@@ -504,7 +548,6 @@ LVGL初始化设置如下：
 |---|---|
 |<img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250107172703.png" height="200">|<img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250107154455.png" height="200">|
 
-实际上，这个效果仍然不对，因为本例设置的是蓝色背景，中间矩形从绿到红渐变，但是现在整体呈现反色的效果。猜测可能为颜色反转(Color Inversion)设置错误。
-根据屏幕方向调试的结果看，当设置颜色为0x0000时，呈现白色。这显然不对，因此可以判断该屏幕需要反色才能呈现正常颜色，且在LCD初始化时就应该设置为反色。
+实际上，这个效果仍然不对，因为本例设置的是蓝色背景，中间矩形从绿到红渐变，但是现在整体呈现反色的效果。猜测可能为颜色反转(Color Inversion)设置错误。根据屏幕方向调试的结果看，当设置颜色为0x0000时，呈现白色。这显然不对，因此可以判断该屏幕需要反色才能呈现正常颜色，且在LCD初始化时就应该设置为反色。
 在ST7789驱动手册中，反色命令为`21h`，不带参数单独发送。但ST7789作为ESP-IDF内置Component，应使用其提供的API进行初始化设置。查询文档可知，该API为`esp_lcd_panel_invert_color(esp_lcd_panel_handle_t lcd_panel_handle, bool invert_color_data)`，在第2步配置Panel device后调用。效果如下（窗口控件经过调整）：
 <img src="https://raw.githubusercontent.com/even904/Images/main/pic/20250108203059.png" height="300">
