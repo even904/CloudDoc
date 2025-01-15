@@ -3,6 +3,7 @@
   - [【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读](【ESP32-WiFi学习】第一篇：WiFi工作模式与例程解读.md)
   - [【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读](【ESP32-WiFi学习】第二篇：WiFi漫游(WiFiRoaming)工作原理与例程解读.md)
   - [【ESP32-WiFi学习】第三篇：ST7789LCD-LVGL移植与应用](【ESP32-WiFi学习】第三篇：ST7789LCD-LVGL移植与应用.md)
+  - [【ESP32-WiFi学习】第四篇：设置网络时间与天气信息](【ESP32-WiFi学习】第四篇：设置网络时间与天气信息.md)
   - [【ESP32-WiFi学习】Bugs解决记录](【ESP32-WiFi学习】Bugs解决记录.md)
 - [Docsify](example.md)
   - [文档写作样例](example.md)

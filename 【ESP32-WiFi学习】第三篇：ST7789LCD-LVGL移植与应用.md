@@ -272,7 +272,7 @@ void app_main(void) {
 #### ESP32的内存与LVGL的显存
 
 ##### 内存与显存分配
-ESP32的内存段分配（可参考[ELF结构详解](https://www.cnblogs.com/QiQi-Robotics/p/15573352.html)）可以参看编译输出的内存使用摘要(Memory Type Usage Summary)。
+ESP32的内存段分配（可参考[ELF结构详解](https://www.cnblogs.com/QiQi-Robotics/p/15573352.html)）可以参看编译输出的内存使用摘要(Memory Type Usage Summary)。此处并不能直接显示出堆栈内存占用量，但可以体现`menuconfig`中配置的LVGL可管理内存大小，反映在DRAM使用率上。
 
 | Memory Type/Section | Used [bytes] | Used [%] | Remain [bytes] | Total [bytes] |
 |---------------------|--------------|----------|----------------|---------------|
