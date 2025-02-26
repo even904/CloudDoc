@@ -1,4 +1,5 @@
 - 文档导航
   - [ESP32-WiFi学习](【ESP32-WiFi学习】任务目标.md)
+  - [【知识框架】电子与通信知识框架](【知识框架】电子与通信知识框架.md)
   - [Docsify](example.md)
 - [博客主页](https://even904.github.io/)

@@ -5,6 +5,8 @@
   - [【ESP32-WiFi学习】第三篇：ST7789LCD-LVGL移植与应用](【ESP32-WiFi学习】第三篇：ST7789LCD-LVGL移植与应用.md)
   - [【ESP32-WiFi学习】第四篇：设置网络时间与天气信息](【ESP32-WiFi学习】第四篇：设置网络时间与天气信息.md)
   - [【ESP32-WiFi学习】Bugs解决记录](【ESP32-WiFi学习】Bugs解决记录.md)
+- [【知识框架】电子与通信知识框架](【知识框架】电子与通信知识框架.md)
+- [【知识框架】C++程序设计基础](【知识框架】C++程序设计基础.md)
 - [Docsify](example.md)
   - [文档写作样例](example.md)
   - [图片视频样例](Build.md)
