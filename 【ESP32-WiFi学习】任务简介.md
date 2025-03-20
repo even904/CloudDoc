@@ -1,8 +1,8 @@
 ---
 author: [Even]
 date: [2024年12月31日]
-update: [2024年01月07日]
-title: [【ESP32-WiFi学习】任务目标]
+update: [2024年03月20日]
+title: [【ESP32-WiFi学习】任务简介]
 tags: [ESP32,WiFi,ESP-IDF]
 ---
 
@@ -52,3 +52,6 @@ flowchart LR
 在本项目中，应用层的主要工作是在客户端和服务器之间建立http/https连接，然后使用json传输和解析数据。
 
 将配置信息保存在NVS中，在线重启或是硬件复位重启后可以调用配置信息执行天气获取等操作。
+
+# 视频展示
+该项目视频展示链接[ESP32核心板&ST7789天气时钟】](https://www.bilibili.com/video/BV1bCAjebE52/?share_source=copy_web&vd_source=c279451b1f89ae9a16dc3bfe36f06c57)
