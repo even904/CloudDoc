@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【工业互联网】专栏介绍"
-tags = ["5G,k8s,容器,边缘计算,网络通信优化"]
+title = "【计算机网络】实践-1：局域网转发"
+tags = ["计算机网络, 代理, 端口转发"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)
