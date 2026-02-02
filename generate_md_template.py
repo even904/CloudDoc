@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【计算机网络】5 网络层：控制平面"
-tags = ["计算机网络, 网络层, 控制平面"]
+title = "【强化学习】专栏介绍"
+tags = ["强化学习,数学原理,实践,简介"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)
