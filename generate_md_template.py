@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【强化学习】2 贝尔曼公式"
-tags = ["强化学习,数学原理,贝尔曼公式"]
+title = "【强化学习】3 贝尔曼最优公式"
+tags = ["强化学习,数学原理,贝尔曼公式,最优"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)
