@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【强化学习】5 蒙特卡洛方法"
-tags = ["强化学习,数学原理,蒙特卡洛方法,MC Basic,MC Exploring Starts,MC Epsilon-Greedy"]
+title = "【强化学习】6 随机近似与随机梯度下降"
+tags = ["强化学习,数学原理,随机近似,随机梯度下降,Robbins-Monro"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)
