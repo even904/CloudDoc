@@ -30,8 +30,8 @@ tags: {tags_str}
 author = "Even"
 initial_date = datetime.now().strftime("%Y年%m月%d日")
 update_date = datetime.now().strftime("%Y年%m月%d日")
-title = "【强化学习】7 时序差分方法"
-tags = ["强化学习,数学原理,Temporal-Difference,时序差分"]
+title = "【Linux系统】1 设备与字符设备编写"
+tags = ["Linux,system,device,character device"]
 
 # 生成Markdown模板
 markdown_content = generate_markdown_template(title, author, tags, initial_date, update_date)
